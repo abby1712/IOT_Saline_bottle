@@ -1,34 +1,35 @@
+// Header Files
 #include <ESP8266Webhook.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 String value1,value2,value3;
 
-#define KEY "bntaYKMGYoYsWKQTswVgFe"        // Webhooks Key
-#define EVENT "Bottle_25"      // Webhooks Event Name
+#define KEY " Your Webhook Key "        // Webhooks Key
+#define EVENT "Your Event name "      // Webhooks Event Name
 #include "HX711.h"
 Webhook webhook(KEY, EVENT);    // Create an object.
 
 //SSID and Password of your WiFi router
-const char* ssid = "Abhishek_Sebastian";
-const char* password = "Abby@1234";
+const char* ssid = "Your Wifi name";
+const char* password = "Your Wifi Password";
 #define LED 2       //On board LED
 #define LED1 D8
 #define LED2 D5
 #define LED3 D6
 #define LED4 D7
-//#define Buzzer D3
+
 
 
 ESP8266WebServer server(80);
 HX711 scale(D2, D1);
-float calibration_factor = -226.70;
+float calibration_factor = -226.70;    // Differs For Every Load Cell
 float units,initial_unit;
 float ounces;
-float initialWeight=380.00;
+float initialWeight=380.00;      // Average Saline Bottle Weight 
 float Weight, Percentage;
 
-const char MAIN_page[] PROGMEM = R"=====(
+const char MAIN_page[] PROGMEM = R"=====(        
 <!doctype html>
 <html>
 <head>
@@ -146,7 +147,7 @@ void readData() {
   Percentage = (Weight/initialWeight)*100; // Gets the values of the Percentage 
   IFTTT_Trigger(Percentage,Weight,value1,value2,value3);
   LED_Display(Percentage);
-  //Buzzer_alert(Percentage);
+
 
 }
 void handle_NotFound(){
@@ -201,7 +202,7 @@ void setup ()
   Serial.println("Enter Patient's age:  ");
   value3=Serial.readStringUntil('\n');//age
   delay(8000);
-
+// LED Calibration and Tare Mode on.
   
 
   Serial.println("Remove Weight \n ");
@@ -253,9 +254,9 @@ void setup ()
  
 }
 void IFTTT_Trigger(int percentage,int weight,String value1,String value2,String value3)
-{  if (weight>50){
+{  if (weight>50){                                  // Weight >50 ( Bottle Weight)
   if(percentage<25){
-  webhook.trigger(value1,value2,value3);
+  webhook.trigger(value1,value2,value3);   // Name, Age ,Room Number
 }
 
 }
@@ -269,7 +270,7 @@ void loop(void){
 void LED_Display(int percentage)
 {
 if(percentage>75){
-    digitalWrite(LED1, HIGH);
+    digitalWrite(LED1, HIGH);   // All LED's Will GLow
   digitalWrite(LED2, HIGH);
   digitalWrite(LED3, HIGH);
   digitalWrite(LED4, HIGH);
@@ -277,7 +278,7 @@ if(percentage>75){
   
 }
 if(percentage<75){
-    digitalWrite(LED1, LOW);
+    digitalWrite(LED1, LOW);   // 3 Led's Will Glow
   digitalWrite(LED2, HIGH);
   digitalWrite(LED3, HIGH);
   digitalWrite(LED4, HIGH);
@@ -285,7 +286,7 @@ if(percentage<75){
   
 }
 if(percentage<50){
-    digitalWrite(LED1, LOW);
+    digitalWrite(LED1, LOW);   //2 LED's Will Glow
   digitalWrite(LED2, LOW);
   digitalWrite(LED3, HIGH);
   digitalWrite(LED4, HIGH);
@@ -293,7 +294,7 @@ if(percentage<50){
   
 }
 if(percentage<25){
-    digitalWrite(LED1, LOW);
+    digitalWrite(LED1, LOW);  //1 LED Will Glow
   digitalWrite(LED2, LOW);
   digitalWrite(LED3, LOW);
   digitalWrite(LED4, HIGH);
